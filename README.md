@@ -1,52 +1,51 @@
 # Task Management Application
 
-A robust TypeScript-powered task management application built with React, Auth0 authentication, and Context API for state management.
+A TypeScript & React task management application with Auth0 authentication.
 
 ## Features
 
-- **Task Management**: Create, view, edit, and delete tasks
-- **Task Organization**: Sort and filter tasks by status, priority, and due date
-- **User Authentication**: Secure login and registration with Auth0
-- **User Profiles**: View and manage user profile information
-- **Responsive Design**: Mobile-friendly interface
+- Create, view, edit, and delete tasks
+- Organize tasks by status, priority, and due date
+- Secure authentication with Auth0
+- Responsive design
 
-## Technology Stack
-
-- **Frontend**: React with TypeScript
-- **State Management**: React Context API with TypeScript
-- **Routing**: React Router v6
-- **Form Handling**: Formik with Yup validation
-- **Authentication**: Auth0 React SDK
-- **Styling**: CSS (with potential for CSS-in-JS or frameworks)
-
-## Getting Started
+## Installation
 
 ### Prerequisites
 
 - Node.js (v14+)
 - npm or yarn
 
-### Installation
+### Setup Steps
 
-1. Clone the repository
+1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/task-management-app.git
    cd task-management-app
    ```
 
-2. Install dependencies
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. Configure environment variables
-   Create a `.env` file in the root directory with the following variables:
+3. **Auth0 Configuration**
+   - Create an account at https://auth0.com
+   - Create a new Single Page Application
+   - Set the following URLs in your Auth0 application settings:
+     - Allowed Callback URLs: `http://localhost:3000`
+     - Allowed Logout URLs: `http://localhost:3000`
+     - Allowed Web Origins: `http://localhost:3000`
+   - Note your Auth0 Domain and Client ID
+
+4. **Environment Variables**
+   Create a `.env` file in the root directory:
    ```
    REACT_APP_AUTH0_DOMAIN=your-auth0-domain
    REACT_APP_AUTH0_CLIENT_ID=your-auth0-client-id
    ```
 
-4. Start the development server
+5. **Start the development server**
    ```bash
    npm start
    ```
@@ -55,191 +54,51 @@ A robust TypeScript-powered task management application built with React, Auth0 
 
 ```
 task-management-app/
-├── public/
 ├── src/
-│   ├── components/
-│   │   ├── Auth/
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── PrivateRoute.tsx
-│   │   │   └── ProfilePage.tsx
-│   │   ├── Layout/
-│   │   │   └── Navbar.tsx
-│   │   ├── TaskDashboard/
-│   │   │   ├── TaskList.tsx
-│   │   │   └── TaskItem.tsx
-│   │   ├── TaskDetails/
-│   │   │   └── TaskDetails.tsx
-│   │   └── TaskForm/
-│   │       └── TaskForm.tsx
-│   ├── context/
-│   │   └── TaskContext.tsx
-│   ├── types/
-│   │   └── index.ts
-│   ├── App.tsx
-│   └── index.tsx
-├── package.json
-└── tsconfig.json
+│   ├── components/          # UI components
+│   │   ├── Auth/            # Authentication components
+│   │   ├── Layout/          # Layout components
+│   │   ├── TaskDashboard/   # Task list and items
+│   │   ├── TaskDetails/     # Task view
+│   │   └── TaskForm/        # Task creation/editing
+│   ├── context/             # React Context for state
+│   ├── types/               # TypeScript interfaces
+│   ├── App.tsx              # Main application component
+│   └── index.tsx            # Entry point
+└── package.json
 ```
 
-## Usage
+## Main Components
 
-After logging in, you'll be directed to the dashboard where you can:
+1. **Authentication**
+   - `LoginPage`: Login interface
+   - `PrivateRoute`: Protects routes from unauthorized access
+   - `ProfilePage`: Shows user information
 
-1. View all your tasks
-2. Create new tasks using the "Create Task" button
-3. View task details by clicking on a task
-4. Edit or delete tasks from the task details page
-5. View and edit your profile information
+2. **Task Management**
+   - `TaskList`: Displays all tasks
+   - `TaskDetails`: Shows detailed task information
+   - `TaskForm`: Form for creating/editing tasks
 
-## Authentication
+## How to Use
 
-This application uses Auth0 for authentication. To configure Auth0:
+1. **Login** using the Auth0 authentication system
+2. **View tasks** on the dashboard
+3. **Create new tasks** using the "Create Task" button
+4. **View details** by clicking on a task
+5. **Edit or delete** tasks from the task details page
 
-1. Create an Auth0 account and application at https://auth0.com
-2. Set the callback URL to `http://localhost:3000`
-3. Update the `.env` file with your Auth0 domain and client ID
+## Technology Stack
 
-
-### PrivateRoute
-
-`PrivateRoute` is a wrapper component that ensures users are authenticated before accessing protected routes.
-
-
-### LoginPage
-
-`LoginPage` provides the login interface for unauthenticated users.
-
-
-### ProfilePage
-
-`ProfilePage` displays user information and profile details.
-
-
-## Task Components
-
-### TaskList
-
-`TaskList` displays a list of all tasks and provides a button to create new tasks.
-
-### TaskItem
-
-`TaskItem` is a child component of TaskList that displays an individual task card.
-
-
-### TaskDetails
-
-`TaskDetails` shows detailed information about a specific task.
-
-
-### TaskForm
-
-`TaskForm` provides a form for creating and editing tasks.
-
-
-### Navbar
-
-`Navbar` provides navigation links and authentication controls.
-
-### Provided Methods
-
-- `fetchTasks(): Promise<void>` - Fetches all tasks for the authenticated user
-- `getTask(id: string): Promise<void>` - Fetches a specific task by ID
-- `addTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<void>` - Creates a new task
-- `updateTask(id: string, task: Partial<Task>): Promise<void>` - Updates an existing task
-- `deleteTask(id: string): Promise<void>` - Deletes a task
-
-
-
-### Provider Setup
-
-```tsx
-import { TaskProvider } from './context/TaskContext';
-
-const App = () => {
-  return (
-    <TaskProvider>
-      <Router>
-        {/* App components */}
-      </Router>
-    </TaskProvider>
-  );
-};
+- React with TypeScript
+- React Context API for state management
+- React Router for navigation
+- Formik with Yup for form handling and validation
+- Auth0 for authentication
 ```
 
-### User
-
-```typescript
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  picture?: string;
-}
-```
-
-## State Types
-
-### TaskState
-
-```typescript
-interface TaskState {
-  tasks: Task[];
-  currentTask: Task | null;
-  isLoading: boolean;
-  error: string | null;
-}
-```
-
-### AuthState
-
-```typescript
-interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-}
-```
-
-## Form Types
-
-### TaskFormValues
-
-```typescript
-interface TaskFormValues {
-  title: string;
-  description: string;
-  status: 'todo' | 'in-progress' | 'completed';
-  priority: 'low' | 'medium' | 'high';
-  dueDate?: string;
-}
-```
-
-## Component Props Types
-
-### PrivateRouteProps
-
-```typescript
-interface PrivateRouteProps {
-  children: JSX.Element;
-}
-```
-
-### TaskItemProps
-
-```typescript
-interface TaskItemProps {
-  task: Task;
-}
-```
-```
-
-## SETUP_GUIDE.md
-
-```markdown:docs/SETUP_GUIDE.md
-# Setup Guide
-
-This guide provides detailed instructions for setting up the Task Management Application.
+```markdown:docs/SETUP_AND_DEPLOYMENT.md
+# Detailed Setup & Deployment Guide
 
 ## Local Development Setup
 
@@ -283,3 +142,53 @@ npm start
 
 Your application should now be running at http://localhost:3000
 
+## Deploying Your App
+
+### Option 1: Netlify Deployment
+
+1. Create a GitHub repository and push your code
+2. Sign up for Netlify (netlify.com)
+3. Connect your GitHub repository
+4. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `build`
+5. Add your environment variables in the Netlify dashboard
+6. Deploy
+
+### Option 2: Vercel Deployment
+
+1. Create a GitHub repository and push your code
+2. Sign up for Vercel (vercel.com)
+3. Import your GitHub repository
+4. Vercel will automatically detect React settings
+5. Add your environment variables
+6. Deploy
+
+### Option 3: GitHub Pages
+
+1. Install gh-pages: `npm install --save-dev gh-pages`
+2. Add to package.json:
+   ```json
+   "homepage": "https://yourusername.github.io/task-management-app",
+   "scripts": {
+     "predeploy": "npm run build",
+     "deploy": "gh-pages -d build"
+   }
+   ```
+3. Deploy: `npm run deploy`
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Auth0 Login Not Working**
+   - Verify your Auth0 domain and client ID
+   - Check your callback URLs in Auth0 settings
+
+2. **API Calls Failing**
+   - Ensure your backend API URLs are correct
+   - Check CORS configuration if using a separate backend
+
+3. **Build Errors**
+   - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+   - Check for TypeScript errors: `npm run tsc`
