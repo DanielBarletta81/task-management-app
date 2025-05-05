@@ -1,147 +1,89 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { Task, TaskState } from '../types';
+import React, { createContext, useContext, useState } from 'react';
+import { Task } from '../types';
+import { useAuth0 } from '@auth0/auth0-react';
 
-type TaskAction = 
-  | { type: 'FETCH_TASKS_START' }
-  | { type: 'FETCH_TASKS_SUCCESS'; payload: Task[] }
-  | { type: 'FETCH_TASKS_ERROR'; payload: string }
-  | { type: 'SET_CURRENT_TASK'; payload: Task }
-  | { type: 'CLEAR_CURRENT_TASK' }
-  | { type: 'ADD_TASK_SUCCESS'; payload: Task }
-  | { type: 'UPDATE_TASK_SUCCESS'; payload: Task }
-  | { type: 'DELETE_TASK_SUCCESS'; payload: string };
-
-const initialState: TaskState = {
-  tasks: [],
-  currentTask: null,
-  isLoading: false,
-  error: null,
-};
-
-const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
-  switch (action.type) {
-    case 'FETCH_TASKS_START':
-      return { ...state, isLoading: true, error: null };
-    case 'FETCH_TASKS_SUCCESS':
-      return { ...state, tasks: action.payload, isLoading: false };
-    case 'FETCH_TASKS_ERROR':
-      return { ...state, error: action.payload, isLoading: false };
-    case 'SET_CURRENT_TASK':
-      return { ...state, currentTask: action.payload };
-    case 'CLEAR_CURRENT_TASK':
-      return { ...state, currentTask: null };
-    case 'ADD_TASK_SUCCESS':
-      return { ...state, tasks: [...state.tasks, action.payload] };
-    case 'UPDATE_TASK_SUCCESS':
-      return { 
-        ...state, 
-        tasks: state.tasks.map(task => task.id === action.payload.id ? action.payload : task),
-        currentTask: action.payload
-      };
-    case 'DELETE_TASK_SUCCESS':
-      return { 
-        ...state, 
-        tasks: state.tasks.filter(task => task.id !== action.payload),
-        currentTask: null
-      };
-    default:
-      return state;
+// Add some Sample data for testing
+const sampleTasks: Task[] = [
+  {
+      id: '1',
+      title: 'Complete project setup',
+      description: 'Set up the initial project structure',
+      status: 'completed',
+      priority: 'high',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: ''
+  },
+  {
+    id: '2',
+    title: 'Implement task list',
+    description: 'Create the task list component',
+    status: 'in-progress',
+    priority: 'medium',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: ''
+  },
+  {
+    id: '3',
+    title: 'Add authentication',
+    description: 'Integrate Auth0 for user authentication',
+    status: 'todo',
+    priority: 'high',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: ''
   }
-};
-
-interface TaskContextProps {
-  state: TaskState;
-  fetchTasks: () => Promise<void>;
-  getTask: (id: string) => Promise<void>;
-  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateTask: (id: string, task: Partial<Task>) => Promise<void>;
-  deleteTask: (id: string) => Promise<void>;
+];
+interface TaskContextType {
+  tasks: Task[];
+  addTask: (task: Omit<Task, 'id'>) => void;
+  updateTask: (id: string, updatedTask: Partial<Task>) => void;
+  deleteTask: (id: string) => void;
+  getTask: (id: string) => Task | undefined;
 }
 
-const TaskContext = createContext<TaskContextProps | undefined>(undefined);
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-export const TaskProvider: React.FC<{children: ReactNode}> = ({ children }) => {
-  const [state, dispatch] = useReducer(taskReducer, initialState);
+export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [tasks, setTasks] = useState<Task[]>(sampleTasks);
+  const { user } = useAuth0();
 
-  const fetchTasks = async (): Promise<void> => {
-    dispatch({ type: 'FETCH_TASKS_START' });
-    try {
-      // Replace with actual API call
-      const response = await fetch('/api/tasks');
-      const data = await response.json();
-      dispatch({ type: 'FETCH_TASKS_SUCCESS', payload: data });
-    } catch (error) {
-      dispatch({ type: 'FETCH_TASKS_ERROR', payload: 'Failed to fetch tasks' });
-    }
+  const addTask = (task: Omit<Task, 'id'>) => {
+    const newTask = {
+      ...task,
+      id: Date.now().toString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: user?.sub || 'anonymous'
+    };
+    setTasks([...tasks, newTask]);
   };
 
-  const getTask = async (id: string): Promise<void> => {
-    try {
-      // Replace with actual API call
-      const response = await fetch(`/api/tasks/${id}`);
-      const data = await response.json();
-      dispatch({ type: 'SET_CURRENT_TASK', payload: data });
-    } catch (error) {
-      dispatch({ type: 'FETCH_TASKS_ERROR', payload: 'Failed to fetch task' });
-    }
+  const updateTask = (id: string, updatedTask: Partial<Task>) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, ...updatedTask } : task
+    ));
   };
 
-  const addTask = async (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<void> => {
-    try {
-      // Replace with actual API call
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(task),
-      });
-      const data = await response.json();
-      dispatch({ type: 'ADD_TASK_SUCCESS', payload: data });
-    } catch (error) {
-      dispatch({ type: 'FETCH_TASKS_ERROR', payload: 'Failed to add task' });
-    }
+  const deleteTask = (id: string) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
-  const updateTask = async (id: string, task: Partial<Task>): Promise<void> => {
-    try {
-      // Replace with actual API call
-      const response = await fetch(`/api/tasks/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(task),
-      });
-      const data = await response.json();
-      dispatch({ type: 'UPDATE_TASK_SUCCESS', payload: data });
-    } catch (error) {
-      dispatch({ type: 'FETCH_TASKS_ERROR', payload: 'Failed to update task' });
-    }
-  };
-
-  const deleteTask = async (id: string): Promise<void> => {
-    try {
-      // Replace with actual API call
-      await fetch(`/api/tasks/${id}`, {
-        method: 'DELETE',
-      });
-      dispatch({ type: 'DELETE_TASK_SUCCESS', payload: id });
-    } catch (error) {
-      dispatch({ type: 'FETCH_TASKS_ERROR', payload: 'Failed to delete task' });
-    }
+  const getTask = (id: string) => {
+    return tasks.find(task => task.id === id);
   };
 
   return (
-    <TaskContext.Provider value={{ state, fetchTasks, getTask, addTask, updateTask, deleteTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask, getTask }}>
       {children}
     </TaskContext.Provider>
   );
 };
 
-export const useTaskContext = (): TaskContextProps => {
+export const useTaskContext = () => {
   const context = useContext(TaskContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useTaskContext must be used within a TaskProvider');
   }
   return context;

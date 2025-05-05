@@ -1,39 +1,36 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Auth0Provider} from '@auth0/auth0-react';
-import './App.css';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Auth0Provider } from '@auth0/auth0-react'
+import { TaskProvider } from '../src/context/TaskContext'
 
-// Context Providers
-import { TaskProvider } from './context/TaskContext';
+import Navbar from '../src/components/Navbar'
+import LoginPage from '../src/Auth/LoginPage'
+import PrivateRoute from '../src/Auth/PrivateRoute'
+import TaskList from '../src/Tasks/TaskList'
+import TaskDetail from '../src/Tasks/TaskDetail'
+import TaskForm from '../src/Tasks/TaskForm'
 
-// Components
-import TaskList from './components/TaskList';
-import TaskDetails from './components/TaskDetails';
-import TaskForm from './components/TaskForm';
-import Navbar from './components/Layout/Navbar';
-import PrivateRoute from './components/Auth/PrivateRoute';
-import LoginPage from './components/Auth/LoginPage';
-import ProfilePage from './components/Auth/ProfilePage';
+function App() {
+  //debug lines, I was getting 404 error...
+  console.log("Auth0 Domain:", import.meta.env.VITE_AUTH0_DOMAIN);
+  console.log("Auth0 Client ID:", import.meta.env.VITE_AUTH0_CLIENT_ID);
 
-const App = () => {
   return (
     <Auth0Provider
-      domain="YOUR_AUTH0_DOMAIN"
-      clientId="YOUR_AUTH0_CLIENT_ID"
+      domain={import.meta.env.VITE_AUTH0_DOMAIN || ''}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID || ''}
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: `${window.location.origin}/dashboard`
       }}
     >
       <TaskProvider>
         <Router>
-          <div className="app-container">
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem' }}>
             <Navbar />
-            <main className="main-content">
+            <div style={{ marginTop: '2rem' }}>
               <Routes>
-                {/* Public routes */}
                 <Route path="/login" element={<LoginPage />} />
                 
-                {/* Protected routes */}
                 <Route path="/dashboard" element={
                   <PrivateRoute>
                     <TaskList />
@@ -42,7 +39,7 @@ const App = () => {
                 
                 <Route path="/tasks/:id" element={
                   <PrivateRoute>
-                    <TaskDetails />
+                    <TaskDetail />
                   </PrivateRoute>
                 } />
                 
@@ -58,21 +55,14 @@ const App = () => {
                   </PrivateRoute>
                 } />
                 
-                <Route path="/profile" element={
-                  <PrivateRoute>
-                    <ProfilePage />
-                  </PrivateRoute>
-                } />
-                
-                {/* Redirect to dashboard if logged in, otherwise to login */}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/" element={<Navigate to="/dashboard" />} />
               </Routes>
-            </main>
+            </div>
           </div>
         </Router>
       </TaskProvider>
     </Auth0Provider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

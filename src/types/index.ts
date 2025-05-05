@@ -9,24 +9,3 @@ export interface Task {
   updatedAt: Date;
   userId: string;
 }
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  picture?: string;
-}
-
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-}
-
-export interface TaskState {
-  tasks: Task[];
-  currentTask: Task | null;
-  isLoading: boolean;
-  error: string | null;
-}
