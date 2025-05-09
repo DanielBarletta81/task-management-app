@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
 import { TaskProvider } from '../src/context/TaskContext'
@@ -9,6 +8,8 @@ import PrivateRoute from '../src/Auth/PrivateRoute'
 import TaskList from '../src/Tasks/TaskList'
 import TaskDetail from '../src/Tasks/TaskDetail'
 import TaskForm from '../src/Tasks/TaskForm'
+
+
 
 function App() {
   //debug lines, I was getting 404 error...
