@@ -6,55 +6,46 @@ const Navbar: React.FC = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   return (
-    <nav style={{ 
+    <nav className="glass-card" style={{ 
       display: 'flex', 
       justifyContent: 'space-between', 
-      padding: '1rem', 
-      background: '#f0f0f0',
-      alignItems: 'center'
+      padding: '1.5rem 2rem', 
+      margin: '1rem 1rem 2rem 1rem',
+      position: 'relative',
+      zIndex: 100
     }}>
       <div>
-        <Link to="/" style={{ fontSize: '1.2rem', fontWeight: 'bold', textDecoration: 'none', color: '#333' }}>
-          Task Manager
+        <Link to="/" style={{ 
+          fontSize: '2.2rem', 
+          fontWeight: '900',
+          fontFamily: 'Orbitron, monospace',
+          textTransform: 'uppercase',
+          letterSpacing: '2px'
+        }}>
+          ⚡ Task Matrix
         </Link>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="flex-row">
         {isAuthenticated ? (
           <>
-            <Link to="/dashboard" style={{ marginRight: '1rem', textDecoration: 'none', color: '#333' }}>
+            <Link to="/dashboard" className="nav-link">
               Dashboard
             </Link>
             {user && (
-              <span style={{ marginRight: '1rem' }}>
+              <span style={{ 
+                color: 'var(--neon-green)',
+                fontFamily: 'Orbitron, monospace',
+                fontSize: '1.1rem'
+              }}>
                 {user.name}
               </span>
             )}
-            <button 
-              onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-              style={{ 
-                padding: '0.3rem 0.8rem', 
-                backgroundColor: '#dc3545', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '4px', 
-                cursor: 'pointer' 
-              }}
-            >
+            <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
               Log Out
             </button>
           </>
         ) : (
-          <button 
-            onClick={() => loginWithRedirect()}
-            style={{ 
-              padding: '0.3rem 0.8rem', 
-              backgroundColor: '#0066cc', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
-            }}
-          >
+          <button onClick={() => loginWithRedirect()}>
             Log In
           </button>
         )}

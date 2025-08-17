@@ -50,71 +50,77 @@ const TaskForm: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>{isEditMode ? 'Edit Task' : 'Create Task'}</h1>
+    <div className="section">
+      <h1>⚡ {isEditMode ? 'Edit Task' : 'Create Task'}</h1>
       
-      <Formik
-        initialValues={initialValues}
-        validationSchema={TaskSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '500px' }}>
-            <div>
-              <label htmlFor="title">Title</label>
-              <Field name="title" type="text" style={{ width: '100%', padding: '0.5rem' }} />
-              <ErrorMessage 
-                name="title"
-                render={msg => <div style={{ color: 'red' }}>{msg}</div>}
-              />
-            </div>
+      <div className="glass-card" style={{ padding: '2.5rem', maxWidth: '600px', margin: '0 auto' }}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={TaskSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="flex-col">
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+                <Field name="title" type="text" style={{ width: '100%' }} />
+                <ErrorMessage 
+                  name="title"
+                  render={msg => <div className="error-message">{msg}</div>}
+                />
+              </div>
 
-            <div>
-              <label htmlFor="description">Description</label>
-              <Field name="description" as="textarea" rows={4} style={{ width: '100%', padding: '0.5rem' }} />
-              <ErrorMessage 
-                name="description"
-                render={msg => <div style={{ color: 'red' }}>{msg}</div>}
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <Field name="description" as="textarea" rows={4} style={{ width: '100%', resize: 'vertical' }} />
+                <ErrorMessage 
+                  name="description"
+                  render={msg => <div className="error-message">{msg}</div>}
+                />
+              </div>
 
-            <div>
-              <label htmlFor="status">Status</label>
-              <Field name="status" as="select" style={{ width: '100%', padding: '0.5rem' }}>
-                <option value="todo">To Do</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-              </Field>
-              <ErrorMessage 
-                name="status"
-                render={msg => <div style={{ color: 'red' }}>{msg}</div>}
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="status">Status</label>
+                <Field name="status" as="select" style={{ width: '100%' }}>
+                  <option value="todo">To Do</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </Field>
+                <ErrorMessage 
+                  name="status"
+                  render={msg => <div className="error-message">{msg}</div>}
+                />
+              </div>
 
-            <div>
-              <label htmlFor="priority">Priority</label>
-              <Field name="priority" as="select" style={{ width: '100%', padding: '0.5rem' }}>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </Field>
-              <ErrorMessage 
-                name="priority"
-                render={msg => <div style={{ color: 'red' }}>{msg}</div>}
-              />
+              <div className="form-group">
+                <label htmlFor="priority">Priority</label>
+                <Field name="priority" as="select" style={{ width: '100%' }}>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </Field>
+                <ErrorMessage 
+                  name="priority"
+                  render={msg => <div className="error-message">{msg}</div>}
+                />
               </div>
               
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <button type="submit" disabled={isSubmitting} style={{ padding: '0.5rem 1rem' }}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
-              <button type="button" onClick={() => navigate('/dashboard')} style={{ padding: '0.5rem 1rem' }}>
-                Cancel
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+              <div className="flex-row" style={{ justifyContent: 'center' }}>
+                <button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Processing...' : isEditMode ? 'Update' : 'Create'}
+                </button>
+                <button type="button" onClick={() => navigate('/dashboard')} style={{
+                  background: 'transparent',
+                  border: '2px solid var(--glass-border)',
+                  color: 'var(--text-secondary)'
+                }}>
+                  Cancel
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 };

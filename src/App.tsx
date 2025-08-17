@@ -25,10 +25,12 @@ function App() {
     >
       <TaskProvider>
         <Router>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem' }}>
-            <Navbar />
-            <div style={{ marginTop: '2rem' }}>
-              <Routes>
+          <div className="app-container">
+            <div className="pulse-light"></div>
+            <div className="container">
+              <Navbar />
+              <main className="section">
+                <Routes>
                 <Route path="/login" element={<LoginPage />} />
                 
                 <Route path="/dashboard" element={
@@ -56,7 +58,8 @@ function App() {
                 } />
                 
                 <Route path="/" element={<Navigate to="/dashboard" />} />
-              </Routes>
+                </Routes>
+              </main>
             </div>
           </div>
         </Router>
